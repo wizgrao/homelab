@@ -1,4 +1,4 @@
 #!/bin/bash
-
-sudo docker-compose down
-sudo docker-compose up --build -d
+podman build --platform linux/arm64 -t docker.io/gauravity4356/nginx-gaurav:latest .
+podman push docker.io/gauravity4356/nginx-gaurav
+kubectl rollout restart deploy/nginx-deployment
