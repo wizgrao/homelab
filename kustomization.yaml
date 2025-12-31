@@ -1,0 +1,7 @@
+resources:
+  - nginx.yml
+  - nginx-svc.yml
+
+images:
+  - name: docker.io/gauravity4356/nginx-gaurav
+    newTag: latest

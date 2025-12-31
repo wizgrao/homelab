@@ -49,9 +49,8 @@ jobs:
       - name: Render Kubernetes manifests with new image
         run: |
           WORKDIR="$(mktemp -d)"
-          cp nginx.yml nginx-svc.yml "$WORKDIR"/
+          cp nginx/nginx.yml nginx/nginx-svc.yml kustomization.yaml "$WORKDIR"/
           cd "$WORKDIR"
-          printf "resources:\n  - nginx.yml\n  - nginx-svc.yml\n" > kustomization.yaml
           kustomize edit set image docker.io/gauravity4356/nginx-gaurav=${{ env.IMAGE_NAME }}:${{ github.sha }}
           kustomize build . > nginx.yaml
           echo "RENDER_DIR=$WORKDIR" >> $GITHUB_ENV
