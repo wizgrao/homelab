@@ -18,7 +18,7 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
             - >-
-              samba.sh -s "public;/share;yes;no;yes;all" -p -u "${SAMBA_USERNAME};${SAMBA_PASSWORD}"
+              samba.sh -s "sambar;/share;yes;no;no;${SAMBA_USERNAME}" -p -u "${SAMBA_USERNAME};${SAMBA_PASSWORD}"
           env:
             - name: SAMBA_USERNAME
               valueFrom:
