@@ -1,6 +1,18 @@
 resources:
-  - nginx.yml
-  - nginx-svc.yml
+  - apps/nginx/nginx.yml
+  - apps/nginx/nginx-svc.yml
+  - apps/samba/samba-pv.yaml
+  - apps/samba/samba-pvc.yaml
+  - apps/samba/samba-deployment.yaml
+  - apps/samba/samba-svc.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+secretGenerator:
+  - name: samba-credentials
+    envs:
+      - apps/samba/secret.env
 
 images:
   - name: docker.io/gauravity4356/nginx-gaurav

@@ -47,10 +47,19 @@ jobs:
           kustomize-version: v5.4.1
 
       - name: Render Kubernetes manifests with new image
+        env:
+          SAMBA_USERNAME: ${{ secrets.SAMBA_USERNAME }}
+          SAMBA_PASSWORD: ${{ secrets.SAMBA_PASSWORD }}
         run: |
           WORKDIR="$(mktemp -d)"
-          cp nginx/nginx.yml nginx/nginx-svc.yml kustomization.yaml "$WORKDIR"/
+          cp kustomization.yaml "$WORKDIR"/
+          cp -r apps "$WORKDIR"/
           cd "$WORKDIR"
+          if [ -z "$SAMBA_USERNAME" ] || [ -z "$SAMBA_PASSWORD" ]; then
+            echo "SAMBA_USERNAME and SAMBA_PASSWORD secrets are required" >&2
+            exit 1
+          fi
+          printf "username=%s\npassword=%s\n" "$SAMBA_USERNAME" "$SAMBA_PASSWORD" > apps/samba/secret.env
           kustomize edit set image docker.io/gauravity4356/nginx-gaurav=${{ env.IMAGE_NAME }}:${{ github.sha }}
           kustomize build . > nginx.yaml
           echo "RENDER_DIR=$WORKDIR" >> $GITHUB_ENV

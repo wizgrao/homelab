@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: samba
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: samba
+  template:
+    metadata:
+      labels:
+        app: samba
+    spec:
+      containers:
+        - name: samba
+          image: dperson/samba:latest
+          command: ["/bin/sh", "-c"]
+          args:
+            - >-
+              samba.sh -s "public;/share;yes;no;yes;all" -p -u "${SAMBA_USERNAME};${SAMBA_PASSWORD}"
+          env:
+            - name: SAMBA_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: samba-credentials
+                  key: username
+            - name: SAMBA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: samba-credentials
+                  key: password
+          ports:
+            - containerPort: 445
+              name: smb
+              protocol: TCP
+          volumeMounts:
+            - name: samba-data
+              mountPath: /share
+      volumes:
+        - name: samba-data
+          persistentVolumeClaim:
+            claimName: samba-pvc
